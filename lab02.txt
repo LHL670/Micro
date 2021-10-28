@@ -2,7 +2,7 @@
 XBR2	equ	0e3h
 P1MDIN	equ	0adh
 P2MDOUT equ	0a6h	;PORT 2 OUTPUT MODE CONFIGURATION
-WDTCN	equ	Offh	;watch tiom dog
+WDTCN	equ	Offh	;watch time dog
 SFRPAGE equ	084h
 P1	equ	090h
 P2	equ	0a0h
@@ -29,7 +29,7 @@ wait:
 		jz	wait	;若A=0跳至wait
 		
 		;detect button and display
-		
+main:		
 		mov	P1, #00000001B
 		mov	PSW,#00h	;選擇暫存器組0
 Loop_Begin:
