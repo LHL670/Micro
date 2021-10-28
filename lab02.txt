@@ -1,0 +1,48 @@
+;define control registers (with address)
+XBR2	equ	0e3h
+P1MDIN	equ	0adh
+P2MDOUT equ	0a6h	;PORT 2 OUTPUT MODE CONFIGURATION
+WDTCN	equ	Offh	;watch tiom dog
+SFRPAGE equ	084h
+P1	equ	090h
+P2	equ	0a0h
+
+;define control words
+CONFIG_PAGE	equ	0fh
+LEGACY_PAGE	equ	00h
+		;turn-off the watch-dog timer
+		mov	WDTCN, #0deh	; disable software watchdog timer
+		mov	WDTCN, #0adh
+
+		;setup port configuration
+		mov	SFRPAGE, #CONFIG_PAGE	;取SFR的Page15
+		mov	XBR2, #0c0h
+		mov	P1MDIN,#0ffh
+		mov	P2MDOUT, #0ffh
+		mov	SFRPAGE, #LEGACY PAGE
+		
+mov	P1, #00000001B
+
+wait:
+		mov	P2, #0
+		mov	A, P1
+		jz	wait	;若A=0跳至wait
+		
+		;detect button and display
+		
+		mov	P1, #00000001B
+		mov	PSW,#00h	;選擇暫存器組0
+Loop_Begin:
+		mov	P2, A	;由P2輸出
+		LCALL	Delay
+		RR	A	;累加器向右右旋轉
+		LJMP	Loop_Begin
+				mov R0,#0
+
+Delay:		mov R1,#40
+Delay_1:	mov R2,#20
+Delay_2:	DJNZ	R2,Delay_2
+			DJNZ	R1,Delay_1
+			DJNZ	R0,Delay
+			RET
+			end
